@@ -33,18 +33,22 @@ kvstore.set("title", settings.title)
 
 -- Blog posts here!
 local posts = {}
+local modtimes = {}
 local titles, err = io.list(settings.posts_path)
 if err then
 	print(err)
 	os.exit(1)
 end
 for k, v in pairs(titles) do
-	print(v, "->", settings.posts_path .. v)
-	local src = readfile(settings.posts_path .. v)
+	local file = settings.posts_path .. v
+	print(v, "->", file)
+	local src = readfile(file)
+	modtimes[v] = io.modtime(file)
 	posts[v] = markdown(src)
 end
 
 kvstore.set("posts", posts)
+kvstore.set("modtimes", modtimes)
 
 -- The routes
 srv.Use(mw.Logger()) -- Activate logger.
@@ -52,10 +56,15 @@ srv.Use(mw.Logger()) -- Activate logger.
 srv.GET("/", mw.new(function() -- Front page
 	local template = require("template")
 
-	local res = template.render(kvstore.get("template_main"), {
+	local res, err = template.render(kvstore.get("template_main"), {
 		title=kvstore.get("title"),
-		posts=kvstore.get("posts")
+		posts=kvstore.get("posts"),
+		modtimes=kvstore.get("modtimes"),
+		os=os
 	})
+	if err then
+		print("Template error:", err)
+	end
 	content(res)
 end))
 
@@ -63,6 +72,7 @@ srv.GET("/:postid", mw.new(function()
 	local template = require("template")
 
 	local posts = kvstore.get("posts")
+	local modtimes=kvstore.get("modtimes")
 	local postid = params("postid")
 
 	local src
@@ -74,11 +84,16 @@ srv.GET("/:postid", mw.new(function()
 		src = kvstore.get("template_fail")
 	end
 
-	local res = template.render(src, {
+	local res, err = template.render(src, {
 		postid=postid,
 		post=posts[postid],
 		posts=posts,
-		title=kvstore.get("title")
+		title=kvstore.get("title"),
+		modtimes=modtimes,
+		os=os
 	})
+	if err then
+		print("Template error:", err)
+	end
 	content(res)
 end))
