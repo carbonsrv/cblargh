@@ -2,7 +2,7 @@
 
 -- Libraries
 local template = require("template")
-local markdown = require("3rdparty/markdown")
+local markdown = markdown and markdown.github or require("3rdparty/markdown")
 
 -- Load Settings
 settings = assert(loadfile("settings.lua")())
@@ -55,12 +55,15 @@ srv.Use(mw.Logger()) -- Activate logger.
 
 srv.GET("/", mw.new(function() -- Front page
 	local template = require("template")
+	local modtimes = kvstore.get("modtimes")
 
 	local res, err = template.render(kvstore.get("template_main"), {
 		title=kvstore.get("title"),
 		posts=kvstore.get("posts"),
-		modtimes=kvstore.get("modtimes"),
-		os=os
+		modtimes=modtimes,
+		modtimes_r=table.flip(modtimes),
+		os=os,
+		table=table
 	})
 	if err then
 		print("Template error:", err)
@@ -76,12 +79,14 @@ srv.GET("/:postid", mw.new(function()
 	local postid = params("postid")
 
 	local src
+	local respcode = 200
 	if posts[postid] then -- Post exists.
 		print("Post found!")
 		src = kvstore.get("template_post")
 	else -- Render fail template
 		print("Post not found! :(")
 		src = kvstore.get("template_fail")
+		respcode = 404
 	end
 
 	local res, err = template.render(src, {
@@ -95,5 +100,5 @@ srv.GET("/:postid", mw.new(function()
 	if err then
 		print("Template error:", err)
 	end
-	content(res)
+	content(res, respcode)
 end))
