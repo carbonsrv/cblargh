@@ -1,0 +1,134 @@
+@import url(//fonts.googleapis.com/css?family=VT323);
+
+* {
+	box-sizing: border-box;
+}
+
+.noselect, b, br {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor:default;
+}
+
+body {
+	background-color: #010900;
+	padding: .05em .5em;
+	margin-right: 20px;
+	text-shadow: rgba(80,128,0,.2) .5em 0;
+	color: #2CC920;
+	font-family: 'VT323', 'Monospace';
+	position: absolute;
+	z-index: 999999;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	-webkit-font-smoothing: none;
+	line-height: 1.2;
+	-webkit-animation: bg-move 2s ease-out infinite;
+	background-size: 100% 8px;
+	background-image: linear-gradient(0, rgba(255,255,255,0.05) 10%, transparent 10%, transparent 50%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 60%, transparent 60%, transparent);
+}
+
+ul {
+	list-style: none;
+}
+
+::-moz-selection {
+	background: white;
+}
+
+::selection {
+	background: rgba(100,100,100,0.6);
+}
+@-webkit-keyframes cursor {
+	0%{
+		opacity:1;
+	}
+	49.9% {
+		opacity:1;
+	}
+	50% {
+		opacity:0;
+	}
+	99.9% {
+		opacity:0;
+	}
+	100% {
+		opacity:1;
+	}
+}
+
+@-moz-keyframes bg-move {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 0 -32px;
+	}
+}
+@-webkit-keyframes bg-move {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 0 -32px;
+	}
+}
+@-o-keyframes bg-move {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 0 -32px;
+	}
+}
+@keyframes bg-move {
+	0% {
+		background-position: 0 0;
+	}
+	100% {
+		background-position: 0 -32px;
+	}
+}
+
+.cursor:after {
+	content:'_';
+	-webkit-animation: cursor 2s infinite;
+}
+
+h1 {
+	font-size: 48px;
+}
+
+h2 {
+	font-size: 32px;
+}
+
+h3 {
+	font-size: 24px;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+	font-size: 24px;
+}
+
+.content {
+	padding: 40px;
+}
+
+.yellow {
+	color:#F5A12D;
+	text-shadow: rgba(150,128,0,.2) .5em 0;
+}
+
+.purple {
+	color:#73677B;
+	text-shadow: rgba(50,60,70,.2) .5em 0;
+}

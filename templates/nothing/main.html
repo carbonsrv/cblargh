@@ -3,8 +3,10 @@
 		<title><%= title %></title>
 	</head>
 	<body>
+		<h1><%= title %></h1>
+		<h3><%= aboutme %></h2><br />
 		<%& table.reverseOrderedPairs(modtimes_r) %>
-		<h1>* <a href="<%v%>"><%v%></a> - <%= os.date("%a %b %d %T UTC %Y", k) %></h1><br />
+		<h1>* <a href="post/<%v%>"><%v%></a> - <%= os.date("%a %b %d %T UTC %Y", k) %></h1><br />
 		<%&%>
 	</body>
 </html>

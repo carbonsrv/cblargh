@@ -1,6 +1,8 @@
 -- CBlargh Server
 
 -- Libraries
+srv.Use(mw.Logger()) -- Activate logger.
+
 local template = require("template")
 local markdown = markdown and markdown.github or require("3rdparty/markdown")
 
@@ -11,7 +13,6 @@ settings = assert(loadfile("settings.lua")())
 local function readfile(path)
 	local f, err = io.open(path)
 	if f then
-		print("Read "..path)
 		local content = f:read("*a")
 		f:close()
 		return content
@@ -24,12 +25,16 @@ end
 local main_template = readfile("templates/"..settings.template_pack.."/main.html")
 local blog_template = readfile("templates/"..settings.template_pack.."/post.html")
 local fail_template = readfile("templates/"..settings.template_pack.."/fail.html")
+local fail_template = readfile("templates/"..settings.template_pack.."/notfound.html")
 
 -- Put the stuff in the kv store for eventual live reload or something.
+kvstore.set("title", settings.title)
+kvstore.set("aboutme", settings.aboutme)
+
 kvstore.set("template_main", main_template)
 kvstore.set("template_post", blog_template)
 kvstore.set("template_fail", fail_template)
-kvstore.set("title", settings.title)
+kvstore.set("template_notfound", fail_template)
 
 -- Blog posts here!
 local posts = {}
@@ -41,24 +46,36 @@ if err then
 end
 for k, v in pairs(titles) do
 	local file = settings.posts_path .. v
-	print(v, "->", file)
+	print("post/"..v, "->", file)
 	local src = readfile(file)
 	modtimes[v] = io.modtime(file)
 	posts[v] = markdown(src)
 end
 
+print() -- empty line
+
 kvstore.set("posts", posts)
 kvstore.set("modtimes", modtimes)
 
--- The routes
-srv.Use(mw.Logger()) -- Activate logger.
+-- Load css into memory.
+local css_exists = os.exists("templates/"..settings.template_pack.."/css")
+local css, err
+if css_exists then
+	css, err = io.list("templates/"..settings.template_pack.."/css")
+	if err then
+		print(err)
+		os.exit(1)
+	end
+end
 
+-- The routes
 srv.GET("/", mw.new(function() -- Front page
 	local template = require("template")
 	local modtimes = kvstore.get("modtimes")
 
 	local res, err = template.render(kvstore.get("template_main"), {
 		title=kvstore.get("title"),
+		aboutme=kvstore.get("aboutme"),
 		posts=kvstore.get("posts"),
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
@@ -71,7 +88,7 @@ srv.GET("/", mw.new(function() -- Front page
 	content(res)
 end))
 
-srv.GET("/:postid", mw.new(function()
+srv.GET("/post/:postid", mw.new(function()
 	local template = require("template")
 
 	local posts = kvstore.get("posts")
@@ -94,6 +111,7 @@ srv.GET("/:postid", mw.new(function()
 		post=posts[postid],
 		posts=posts,
 		title=kvstore.get("title"),
+		aboutme=kvstore.get("aboutme"),
 		modtimes=modtimes,
 		os=os
 	})
@@ -102,3 +120,22 @@ srv.GET("/:postid", mw.new(function()
 	end
 	content(res, respcode)
 end))
+
+if css_exists then
+	for _, name in pairs(css) do
+		local handler = mw.echo(readfile("templates/"..settings.template_pack.."/css/"..name))
+		srv.GET("css/"..name, handler)
+	end
+end
+
+if srv.DefaultRoute then
+	local src, err = template.render(kvstore.get("template_notfound"), {
+		title=title,
+		aboutme=aboutme
+	})
+	if err then
+		print(err)
+		os.exit(1)
+	end
+	srv.DefaultRoute(mw.echo(src, 404))
+end
