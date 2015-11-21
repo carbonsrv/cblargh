@@ -21,9 +21,9 @@ local function readfile(path)
 end
 
 -- Read template(s) into memory
-local main_template = readfile("templates/main.html")
-local blog_template = readfile("templates/post.html")
-local fail_template = readfile("templates/fail.html")
+local main_template = readfile("templates/"..settings.template_pack.."/main.html")
+local blog_template = readfile("templates/"..settings.template_pack.."/post.html")
+local fail_template = readfile("templates/"..settings.template_pack.."/fail.html")
 
 -- Put the stuff in the kv store for eventual live reload or something.
 kvstore.set("template_main", main_template)
