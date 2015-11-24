@@ -12,7 +12,7 @@
 	<body>
 		<div class="content">
 			<h4 class="noselect">$ date</h4>
-			<h2 class="title cursor noselect"><%= os.date("%a %b %d %T UTC %Y", modtimes[postid]) %></h1><br />
+			<h2 class="title cursor noselect"><%= os.date("%a %b %d %T %Z %Y", modtimes[postid]) %></h1><br />
 			<%%= post %%>
 		</div>
 	</body>

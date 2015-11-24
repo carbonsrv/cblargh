@@ -27,14 +27,19 @@ local blog_template = readfile("templates/"..settings.template_pack.."/post.html
 local fail_template = readfile("templates/"..settings.template_pack.."/fail.html")
 local fail_template = readfile("templates/"..settings.template_pack.."/notfound.html")
 
+local rss_template = readfile("templates/rss.xml")
+
 -- Put the stuff in the kv store for eventual live reload or something.
 kvstore.set("title", settings.title)
 kvstore.set("aboutme", settings.aboutme)
+kvstore.set("url", settings.url)
 
 kvstore.set("template_main", main_template)
 kvstore.set("template_post", blog_template)
 kvstore.set("template_fail", fail_template)
 kvstore.set("template_notfound", fail_template)
+
+kvstore.set("template_rss", rss_template)
 
 -- Blog posts here!
 local posts = {}
@@ -77,6 +82,7 @@ srv.GET("/", mw.new(function() -- Front page
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		posts=kvstore.get("posts"),
+		url=kvstore.get("url"),
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
 		os=os,
@@ -112,6 +118,7 @@ srv.GET("/post/:postid", mw.new(function()
 		posts=posts,
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
+		url=kvstore.get("url"),
 		modtimes=modtimes,
 		os=os
 	})
@@ -119,6 +126,31 @@ srv.GET("/post/:postid", mw.new(function()
 		print("Template error:", err)
 	end
 	content(res, respcode)
+end))
+
+-- Generate RSS
+srv.GET("/rss.xml", mw.new(function()
+	local template = require("template")
+
+	local posts = kvstore.get("posts")
+	local modtimes=kvstore.get("modtimes")
+
+	local src = kvstore.get("template_rss")
+
+	local res, err = template.render(src, {
+		posts=posts,
+		title=kvstore.get("title"),
+		aboutme=kvstore.get("aboutme"),
+		url=kvstore.get("url"),
+		modtimes=modtimes,
+		modtimes_r=table.flip(modtimes),
+		os=os,
+		table=table
+	})
+	if err then
+		print("Template error:", err)
+	end
+	content(res, 200, "application/rss+xml; charset=UTF-8")
 end))
 
 if css_exists then

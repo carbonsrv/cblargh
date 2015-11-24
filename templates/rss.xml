@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+	<title><%= title %></title>
+	<link><%= url %></link>
+	<description><%= aboutme %></description>
+	<%& table.reverseOrderedPairs(modtimes_r) %>
+	<item>
+		<title><%v%></title>
+		<link><%= url %>post/<%v%></link>
+		<description><%v%></description>
+		<pubDate><%= os.date("%a, %d %b %Y %T %z", k)%></pubDate>
+	</item>
+	<%&%>
+</channel>
+</rss>

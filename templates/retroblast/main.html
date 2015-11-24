@@ -14,7 +14,7 @@
 		<h1 class="title cursor noselect"><%= title %></h1>
 		<h3><%= aboutme %></h2><br />
 		<%& table.reverseOrderedPairs(modtimes_r) %>
-			* <a href="post/<%v%>"><%v%></a> - <%= os.date("%a %b %d %T UTC %Y", k) %><br />
+			* <a href="post/<%v%>"><%v%></a> - <%= os.date("%a %b %d %T %Z %Y", k) %><br />
 		<%&%>
 	</div>
 </body>
