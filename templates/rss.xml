@@ -8,8 +8,9 @@
 	<item>
 		<title><%v%></title>
 		<link><%= url %>post/<%v%></link>
-		<description><%v%></description>
+		<guid isPermaLink="true" ><%= url %>post/<%v%></guid>
 		<pubDate><%= os.date("%a, %d %b %Y %T %z", k)%></pubDate>
+		<description><%v%></description>
 	</item>
 	<%&%>
 </channel>
