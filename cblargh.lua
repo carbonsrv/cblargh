@@ -41,6 +41,7 @@ kvstore.set("template_rss", rss_template)
 
 -- Blog posts here!
 local posts = {}
+local posts_source = {}
 local modtimes = {}
 local titles, err = io.list(settings.posts_path)
 if err then
@@ -52,12 +53,14 @@ for k, v in pairs(titles) do
 	print("post/"..v, "->", file)
 	local src = readfile(file)
 	modtimes[v] = io.modtime(file)
+	posts_source[v] = src
 	posts[v] = markdown(src)
 end
 
 print() -- empty line
 
 kvstore.set("posts", posts)
+kvstore.set("posts_source", posts_source)
 kvstore.set("modtimes", modtimes)
 
 -- Load static files into memory.
@@ -80,6 +83,7 @@ srv.GET("/", mw.new(function() -- Front page
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		posts=kvstore.get("posts"),
+		posts_source=kvstore.get("posts_source"),
 		url=kvstore.get("url"),
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
@@ -96,6 +100,7 @@ srv.GET("/post/:postid", mw.new(function()
 	local template = require("template")
 
 	local posts = kvstore.get("posts")
+	local posts_source = kvstore.get("posts_source")
 	local modtimes=kvstore.get("modtimes")
 	local postid = params("postid")
 
@@ -114,6 +119,7 @@ srv.GET("/post/:postid", mw.new(function()
 		postid=postid,
 		post=posts[postid],
 		posts=posts,
+		posts_source=posts_source,
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		url=kvstore.get("url"),
@@ -130,13 +136,13 @@ end))
 srv.GET("/rss.xml", mw.new(function()
 	local template = require("template")
 
-	local posts = kvstore.get("posts")
 	local modtimes=kvstore.get("modtimes")
 
 	local src = kvstore.get("template_rss")
 
 	local res, err = template.render(src, {
-		posts=posts,
+		posts=vstore.get("posts"),
+		posts_source=kvstore.get("posts_source"),
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		url=kvstore.get("url"),
