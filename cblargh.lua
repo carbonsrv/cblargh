@@ -1,8 +1,6 @@
 -- CBlargh Server
 
 -- Libraries
-srv.Use(mw.Logger()) -- Activate logger.
-
 local template = require("template")
 local markdown = markdown and markdown.github or require("3rdparty/markdown")
 
