@@ -62,11 +62,11 @@ print() -- empty line
 kvstore.set("posts", posts)
 kvstore.set("modtimes", modtimes)
 
--- Load css into memory.
-local css_exists = os.exists("templates/"..settings.template_pack.."/css")
-local css, err
-if css_exists then
-	css, err = io.list("templates/"..settings.template_pack.."/css")
+-- Load static files into memory.
+local static_exists = os.exists("templates/"..settings.template_pack.."/static")
+local static, err
+if static_exists then
+	static, err = io.list("templates/"..settings.template_pack.."/static")
 	if err then
 		print(err)
 		os.exit(1)
@@ -153,10 +153,10 @@ srv.GET("/rss.xml", mw.new(function()
 	content(res, 200, "application/rss+xml; charset=UTF-8")
 end))
 
-if css_exists then
-	for _, name in pairs(css) do
-		local handler = mw.echo(readfile("templates/"..settings.template_pack.."/css/"..name))
-		srv.GET("css/"..name, handler)
+if static_exists then
+	for _, name in pairs(static) do
+		local handler = mw.echo(readfile("templates/"..settings.template_pack.."/static/"..name))
+		srv.GET("static/"..name, handler)
 	end
 end
 
