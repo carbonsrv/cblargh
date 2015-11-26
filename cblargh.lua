@@ -139,7 +139,7 @@ srv.GET("/rss.xml", mw.new(function()
 	local src = kvstore.get("template_rss")
 
 	local res, err = template.render(src, {
-		posts=vstore.get("posts"),
+		posts=kvstore.get("posts"),
 		posts_source=kvstore.get("posts_source"),
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
