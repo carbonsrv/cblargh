@@ -24,7 +24,6 @@ end
 -- Read template(s) into memory
 local main_template = readfile("templates/"..settings.template_pack.."/main.html")
 local blog_template = readfile("templates/"..settings.template_pack.."/post.html")
-local fail_template = readfile("templates/"..settings.template_pack.."/fail.html")
 local fail_template = readfile("templates/"..settings.template_pack.."/notfound.html")
 
 local rss_template = readfile("templates/rss.xml")
@@ -36,7 +35,6 @@ kvstore.set("url", settings.url)
 
 kvstore.set("template_main", main_template)
 kvstore.set("template_post", blog_template)
-kvstore.set("template_fail", fail_template)
 kvstore.set("template_notfound", fail_template)
 
 kvstore.set("template_rss", rss_template)
@@ -156,7 +154,7 @@ end))
 if static_exists then
 	for _, name in pairs(static) do
 		local handler = mw.echo(readfile("templates/"..settings.template_pack.."/static/"..name))
-		srv.GET("static/"..name, handler)
+		srv.GET("/static/"..name, handler)
 	end
 end
 
