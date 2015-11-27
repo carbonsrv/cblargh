@@ -158,8 +158,12 @@ end))
 if static_exists then
 	for _, name in pairs(static) do
 		local handler = mw.echo(readfile("templates/"..settings.template_pack.."/static/"..name))
-		srv.GET("/static/"..name, handler)
+		srv.GET("/theme_static/"..name, handler)
 	end
+end
+
+if os.exists("content") then
+	srv.GET("/content/*path", mw.static("/content"))
 end
 
 if srv.DefaultRoute then

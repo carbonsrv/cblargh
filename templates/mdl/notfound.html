@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<title><%= title %></title>
+
+		<link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="/theme_static/main.css" type="text/css">
+		<!-- Light theme -->
+	</head>
+	<body>
+		<div class="mdl-layout mdl-js-layout mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+			<header class="mdl-layout__header mdl-layout__header--scroll">
+				<div class="mdl-layout__header-row">
+					<span class="mdl-layout-title"><%= title %> // 404</span>
+				</div>
+			</header>
+			<div class="ribbon mdl-color--primary"></div>
+			<main class="mdl-layout__content">
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--8-col">
+						<div class="mdl-card mdl-shadow--2dp">
+							<div class="mdl-card__title">
+								<h3 class="mdl-card__title-text">The post <%= postid %> was not found!</h3>
+							</div>
+							<div class="mdl-card__supporting-text">
+								<p>
+									Whoops! Looks like you've come across
+									a bad post! :( Maybe you should head
+									back to the <a href="/">homepage</a>.
+								</p>
+							</div>
+							<!-- Remove unless subcontents like date -->
+							<div class="mdl-card__actions flex">
+								<span class="mdl-color-text--grey-500"><%= os.date("%a %b %d %T %Z %Y") %></span>
+								<div class="mdl-layout-spacer"></div>
+								<a class="mdl-button mdl-button--accent mdl-js-button mdl-js-ripple-effect" href="/">Homepage</a>
+							</div>
+						</div>
+					</div>
+					<div class="mdl-cell mdl-cell--4-col">
+						<div class="mdl-card mdl-shadow--2dp">
+							<div class="mdl-card__title">
+								<h4 class="mdl-card__title-text">About This Blog!</h4>
+							</div>
+							<div class="mdl-card__supporting-text">
+								<p><%= aboutme %></p>
+								<p><a href="/rss.xml">RSS feed</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</body>
+</html>
