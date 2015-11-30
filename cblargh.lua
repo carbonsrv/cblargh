@@ -1,8 +1,6 @@
 -- CBlargh Server
 
 -- Libraries
-srv.Use(mw.Logger()) -- Activate logger.
-
 local template = require("template")
 local markdown = markdown and markdown.github or require("3rdparty/markdown")
 
@@ -107,10 +105,8 @@ srv.GET("/post/:postid", mw.new(function()
 	local src
 	local respcode = 200
 	if posts[postid] then -- Post exists.
-		print("Post found!")
 		src = kvstore.get("template_post")
 	else -- Render fail template
-		print("Post not found! :(")
 		src = kvstore.get("template_fail")
 		respcode = 404
 	end
@@ -141,7 +137,7 @@ srv.GET("/rss.xml", mw.new(function()
 	local src = kvstore.get("template_rss")
 
 	local res, err = template.render(src, {
-		posts=vstore.get("posts"),
+		posts=kvstore.get("posts"),
 		posts_source=kvstore.get("posts_source"),
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
@@ -160,8 +156,12 @@ end))
 if static_exists then
 	for _, name in pairs(static) do
 		local handler = mw.echo(readfile("templates/"..settings.template_pack.."/static/"..name))
-		srv.GET("/static/"..name, handler)
+		srv.GET("/theme_static/"..name, handler)
 	end
+end
+
+if os.exists("content") then
+	srv.GET("/content/*path", mw.static("/content"))
 end
 
 if srv.DefaultRoute then
