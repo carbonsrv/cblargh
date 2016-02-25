@@ -9,13 +9,17 @@ settings = assert(loadfile("settings.lua")())
 
 -- IO Helper
 local function readfile(path)
-	local f, err = io.open(path)
-	if f then
-		local content = f:read("*a")
-		f:close()
-		return content
+	if fs.readfile then
+		return fs.readfile(path)
 	else
-		return nil, err
+		local f, err = io.open(path)
+		if f then
+			local content = f:read("*a")
+			f:close()
+			return content
+		else
+			return nil, err
+		end
 	end
 end
 
@@ -41,7 +45,7 @@ kvstore.set("template_rss", rss_template)
 local posts = {}
 local posts_source = {}
 local modtimes = {}
-local titles, err = io.list(settings.posts_path)
+local titles, err = (fs.list or io.list)(settings.posts_path)
 if err then
 	print(err)
 	os.exit(1)
