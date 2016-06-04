@@ -127,7 +127,7 @@ srv.GET("/post/:postid", mw.new(function()
 		modtimes=modtimes,
 		os=os
 	})
-	
+
 	if err then
 		print("Template error:", err)
 	end
@@ -172,7 +172,7 @@ end
 
 if srv.DefaultRoute then
 	local src, err = template.render(kvstore.get("template_notfound"), {
-		title=title,
+		title=kvstore.get("title"),
 		aboutme=aboutme
 	})
 	if err then
