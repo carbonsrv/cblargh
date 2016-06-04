@@ -111,7 +111,7 @@ srv.GET("/post/:postid", mw.new(function()
 	if posts[postid] then -- Post exists.
 		src = kvstore.get("template_post")
 	else -- Render fail template
-		src = kvstore.get("template_fail")
+		src = kvstore.get("template_notfound")
 		respcode = 404
 	end
 
