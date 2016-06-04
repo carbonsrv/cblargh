@@ -96,7 +96,7 @@ srv.GET("/", mw.new(function() -- Front page
 		print("Template error:", err)
 	end
 	content(res)
-end))
+end, nil, nil, true))
 
 srv.GET("/post/:postid", mw.new(function()
 	local template = require("template")
@@ -130,7 +130,7 @@ srv.GET("/post/:postid", mw.new(function()
 		print("Template error:", err)
 	end
 	content(res, respcode)
-end))
+end, nil, nil, true))
 
 -- Generate RSS
 srv.GET("/rss.xml", mw.new(function()
@@ -155,7 +155,7 @@ srv.GET("/rss.xml", mw.new(function()
 		print("Template error:", err)
 	end
 	content(res, 200, "application/rss+xml; charset=UTF-8")
-end))
+end, nil, nil, true))
 
 if static_exists then
 	for _, name in pairs(static) do
