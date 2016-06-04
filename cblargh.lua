@@ -92,7 +92,8 @@ srv.GET("/", mw.new(function() -- Front page
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
 		os=os,
-		table=table
+		table=table,
+		string=string
 	})
 
 	if err then
@@ -114,7 +115,8 @@ srv.GET("/about.html", mw.new(function()
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
 		os=os,
-		table=table
+		table=table,
+		string=string
 	})
 
 	if err then
@@ -149,7 +151,8 @@ srv.GET("/post/:postid", mw.new(function()
 		aboutme=kvstore.get("aboutme"),
 		url=kvstore.get("url"),
 		modtimes=modtimes,
-		os=os
+		os=os,
+		string=string
 	})
 
 	if err then
@@ -175,7 +178,8 @@ srv.GET("/rss.xml", mw.new(function()
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
 		os=os,
-		table=table
+		table=table,
+		string=string
 	})
 	if err then
 		print("Template error:", err)

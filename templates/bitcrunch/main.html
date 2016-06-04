@@ -10,15 +10,14 @@
 		<h2 style="text-align: center;">
 			<a href="/">Home</a>
 			 -
-			<a href="/">Home2</a>
-			 -
 			<a href="/about.html">About</a>
 		</h2>
 		<div id="wrapper">
 			<%& table.reverseOrderedPairs(modtimes_r) %>
 			<div>
 				<a href="post/<%v%>"><h4> <%v%></h4></a>
-				<p>TODO: add preview</p>
+				<p><%= string.sub(posts_source[v], 1, 100) .. " ... " %><a href="post/<%v%>">Read more</a></p>
+
 				Last modified <%= os.date("%a %b %d %T %Z %Y", k) %>
 				<br />
 			</div>
