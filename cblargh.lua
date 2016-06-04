@@ -92,6 +92,7 @@ srv.GET("/", mw.new(function() -- Front page
 		os=os,
 		table=table
 	})
+
 	if err then
 		print("Template error:", err)
 	end
@@ -126,6 +127,7 @@ srv.GET("/post/:postid", mw.new(function()
 		modtimes=modtimes,
 		os=os
 	})
+	
 	if err then
 		print("Template error:", err)
 	end

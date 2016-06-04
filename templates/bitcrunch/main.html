@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel="stylesheet" type="text/css" href="/theme_static/solarized.css">
+		<link rel="stylesheet" type="text/css" href="/theme_static/columns.css">
+		<link rel="stylesheet" type="text/css" href="/theme_static/fonts.css">
+	</head>
+	<body>
+		<h1 id="pixel" style="text-align: center;"><%= title %></h1>
+		<h2 style="text-align: center;">
+			<a href="/">Home</a>
+			 -
+			<a href="/">Home2</a>
+			 -
+			<a href="/about.html">About</a>
+		</h2>
+		<div id="wrapper">
+			<%& table.reverseOrderedPairs(modtimes_r) %>
+			<div>
+				<a href="post/<%v%>"><h4> <%v%></h4></a>
+				<p>TODO: add preview</p>
+				Last modified <%= os.date("%a %b %d %T %Z %Y", k) %>
+				<br />
+			</div>
+			<%&%>
+			<h3 style="text-align: center;">
+				<a href="/">Previous</a>
+				 --
+				<a href="/">Next</a>
+			</h3>
+			<h4 style="text-align: center;"><a href="/rss.xml">RSS</a></h4>
+		</div>
+	</body>
+</html>
