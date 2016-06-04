@@ -1,0 +1,22 @@
+/* SKS extra font loader */
+@import url("//fonts.googleapis.com/css?family=Eagle+Lake");
+@import url("//fonts.googleapis.com/css?family=Press+Start+2P");
+/* @import url("http://izaya.pc-logix.com/fonts.css"); */
+
+@font-face {
+  font-family: 'lain';
+  src: url('./lain.woff') format('woff'),
+       url('./lain.ttf') format('truetype');
+}
+
+#hand-writing {
+ font-family: 'Eagle Lake', serif !important;
+}
+
+#pixel {
+ font-family: 'Press Start 2P', serif !important;
+}
+
+#lain {
+ font-family: 'lain' !important;
+}

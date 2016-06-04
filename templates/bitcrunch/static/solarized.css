@@ -1,0 +1,50 @@
+/* Solarized CSS by SKS
+CC-BY-SA */
+
+body {
+ font-size: x-large;
+ background-color: #002B36;
+ color: #93A1A1;
+ border-color: #586e75;
+ outline-color: #586e75;
+ font-family: monospace;
+ text-shadow: 1px 1px 2px inherit;
+}
+div {
+ background-color: inherit
+}
+h1, h2, h3, h4, h5, h6 {
+ background: none #073642;
+ color: #dc322f;
+/* border-radius: 5px; */
+ border: 5px;
+ text-shadow: 1px 1px 1px inherit;
+}
+
+dt {
+ background-color: inherit;
+}
+dl, dd {
+ background-color: inherit;
+}
+li, ul {
+ background-color: inherit;
+}
+
+a:link, a:visited, a:hover, a:active {
+ color: #268BD2;
+}
+
+ul {
+ list-style-type: circle;
+ list-style-position: inside;
+}
+
+abbr {
+ cursor: help;
+}
+code,pre {
+ display: block;
+ padding: 1em;
+ background-color: #073642;
+}
