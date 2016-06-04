@@ -25,6 +25,7 @@ end
 
 -- Read template(s) into memory
 local main_template = readfile("templates/"..settings.template_pack.."/main.html")
+local about_template = readfile("templates/"..settings.template_pack.."/about.html")
 local blog_template = readfile("templates/"..settings.template_pack.."/post.html")
 local fail_template = readfile("templates/"..settings.template_pack.."/notfound.html")
 
@@ -36,6 +37,7 @@ kvstore.set("aboutme", settings.aboutme)
 kvstore.set("url", settings.url)
 
 kvstore.set("template_main", main_template)
+kvstore.set("template_about", about_template)
 kvstore.set("template_post", blog_template)
 kvstore.set("template_notfound", fail_template)
 
@@ -82,6 +84,28 @@ srv.GET("/", mw.new(function() -- Front page
 	local modtimes = kvstore.get("modtimes")
 
 	local res, err = template.render(kvstore.get("template_main"), {
+		title=kvstore.get("title"),
+		aboutme=kvstore.get("aboutme"),
+		posts=kvstore.get("posts"),
+		posts_source=kvstore.get("posts_source"),
+		url=kvstore.get("url"),
+		modtimes=modtimes,
+		modtimes_r=table.flip(modtimes),
+		os=os,
+		table=table
+	})
+
+	if err then
+		print("Template error:", err)
+	end
+	content(res)
+end))
+
+srv.GET("/about.html", mw.new(function()
+	local template = require("template")
+	local modtimes = kvstore.get("modtimes")
+
+	local res, err = template.render(kvstore.get("template_about"), {
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		posts=kvstore.get("posts"),
