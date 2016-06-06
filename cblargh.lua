@@ -70,6 +70,7 @@ kvstore.set("template_rss", rss_template)
 -- Blog posts here!
 local posts = {}
 local posts_source = {}
+local posts_preview = {}
 local modtimes = {}
 local titles, err = list(settings.posts_path)
 if err then
@@ -83,12 +84,14 @@ for k, v in pairs(titles) do
 	modtimes[v] = modtime(file)
 	posts_source[v] = src
 	posts[v] = markdown(src)
+	posts_preview[v] = markdown(string.sub(posts_source[v], 1, 100))
 end
 
 print() -- empty line
 
 kvstore.set("posts", posts)
 kvstore.set("posts_source", posts_source)
+kvstore.set("posts_preview", posts_preview)
 kvstore.set("modtimes", modtimes)
 
 -- Load static files into memory.
@@ -114,6 +117,7 @@ srv.GET("/", mw.new(function() -- Front page
 		aboutme=kvstore.get("aboutme"),
 		posts=kvstore.get("posts"),
 		posts_source=kvstore.get("posts_source"),
+		posts_preview=kvstore.get("posts_preview"),
 		url=kvstore.get("url"),
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
@@ -138,6 +142,7 @@ if about_template then
 			aboutme=kvstore.get("aboutme"),
 			posts=kvstore.get("posts"),
 			posts_source=kvstore.get("posts_source"),
+			posts_preview=kvstore.get("posts_preview"),
 			url=kvstore.get("url"),
 			modtimes=modtimes,
 			modtimes_r=table.flip(modtimes),
@@ -158,6 +163,7 @@ srv.GET("/post/:postid", mw.new(function()
 
 	local posts = kvstore.get("posts")
 	local posts_source = kvstore.get("posts_source")
+	local posts_preview = kvstore.get("posts_preview")
 	local modtimes=kvstore.get("modtimes")
 	local postid = params("postid")
 
@@ -173,8 +179,10 @@ srv.GET("/post/:postid", mw.new(function()
 	local res, err = template.render(src, {
 		postid=postid,
 		post=posts[postid],
+		preview=posts_preview[postid],
 		posts=posts,
 		posts_source=posts_source,
+		posts_preview=posts_preview,
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		url=kvstore.get("url"),
@@ -200,6 +208,7 @@ srv.GET("/rss.xml", mw.new(function()
 	local res, err = template.render(src, {
 		posts=kvstore.get("posts"),
 		posts_source=kvstore.get("posts_source"),
+		posts_preview=kvstore.get("posts_preview"),
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		url=kvstore.get("url"),

@@ -16,7 +16,11 @@
 			<%& table.reverseOrderedPairs(modtimes_r) %>
 			<div>
 				<a href="post/<%v%>"><h4> <%v%></h4></a>
-				<p><%= string.sub(posts_source[v], 1, 100) .. " ... " %><a href="post/<%v%>">Read more</a></p>
+				<p>
+					<%%= posts_preview[v] %%>
+					<br />
+					<a href="post/<%v%>">Read more ...</a>
+				</p>
 
 				Last modified <%= os.date("%a %b %d %T %Z %Y", k) %>
 				<br />
