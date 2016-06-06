@@ -5,7 +5,7 @@ local template = require("template")
 local markdown = markdown and markdown.github or require("3rdparty/markdown")
 
 -- Load Settings
-settings = assert(loadfile("settings.lua")())
+settings = assert(loadfile("settings.lua"))()
 
 -- IO Helper
 local function readfile(path)
@@ -23,10 +23,34 @@ local function readfile(path)
 	end
 end
 
+local function list(path)
+	if fs.list and not settings.dontusephysfs then
+		return fs.list(path)
+	else
+		return io.list(path)
+	end
+end
+
+local function exists(path)
+	if fs.exists and not settings.dontusephysfs then
+		return fs.exists(path)
+	else
+		return os.exists(path)
+	end
+end
+
+local function modtime(path)
+	if fs.modtime and not settings.dontusephyfs then
+		return fs.modtime(path)
+	else
+		return io.modtime(path)
+	end
+end
+
 -- Read template(s) into memory
-local main_template = readfile("templates/"..settings.template_pack.."/main.html")
+local main_template = assert(readfile("templates/"..settings.template_pack.."/main.html"))
 local about_template = readfile("templates/"..settings.template_pack.."/about.html")
-local blog_template = readfile("templates/"..settings.template_pack.."/post.html")
+local blog_template = assert(readfile("templates/"..settings.template_pack.."/post.html"))
 local fail_template = readfile("templates/"..settings.template_pack.."/notfound.html")
 
 local rss_template = readfile("templates/rss.xml")
@@ -47,7 +71,7 @@ kvstore.set("template_rss", rss_template)
 local posts = {}
 local posts_source = {}
 local modtimes = {}
-local titles, err = (fs.list or io.list)(settings.posts_path)
+local titles, err = list(settings.posts_path)
 if err then
 	print(err)
 	os.exit(1)
@@ -56,7 +80,7 @@ for k, v in pairs(titles) do
 	local file = settings.posts_path .. v
 	print("post/"..v, "->", file)
 	local src = readfile(file)
-	modtimes[v] = io.modtime(file)
+	modtimes[v] = modtime(file)
 	posts_source[v] = src
 	posts[v] = markdown(src)
 end
@@ -68,10 +92,10 @@ kvstore.set("posts_source", posts_source)
 kvstore.set("modtimes", modtimes)
 
 -- Load static files into memory.
-local static_exists = os.exists("templates/"..settings.template_pack.."/static")
+local static_exists = exists("templates/"..settings.template_pack.."/static")
 local static, err
 if static_exists then
-	static, err = io.list("templates/"..settings.template_pack.."/static")
+	static, err = list("templates/"..settings.template_pack.."/static")
 	if err then
 		print(err)
 		os.exit(1)
@@ -82,6 +106,8 @@ end
 srv.GET("/", mw.new(function() -- Front page
 	local template = require("template")
 	local modtimes = kvstore.get("modtimes")
+
+	local posts = kvstore.get("posts")
 
 	local res, err = template.render(kvstore.get("template_main"), {
 		title=kvstore.get("title"),
@@ -100,30 +126,32 @@ srv.GET("/", mw.new(function() -- Front page
 		print("Template error:", err)
 	end
 	content(res)
-end))
-
-srv.GET("/about.html", mw.new(function()
-	local template = require("template")
-	local modtimes = kvstore.get("modtimes")
-
-	local res, err = template.render(kvstore.get("template_about"), {
-		title=kvstore.get("title"),
-		aboutme=kvstore.get("aboutme"),
-		posts=kvstore.get("posts"),
-		posts_source=kvstore.get("posts_source"),
-		url=kvstore.get("url"),
-		modtimes=modtimes,
-		modtimes_r=table.flip(modtimes),
-		os=os,
-		table=table,
-		string=string
-	})
-
-	if err then
-		print("Template error:", err)
-	end
-	content(res)
 end, nil, nil, true))
+
+if about_template then
+	srv.GET("/about", mw.new(function()
+		local template = require("template")
+		local modtimes = kvstore.get("modtimes")
+
+		local res, err = template.render(kvstore.get("template_about"), {
+			title=kvstore.get("title"),
+			aboutme=kvstore.get("aboutme"),
+			posts=kvstore.get("posts"),
+			posts_source=kvstore.get("posts_source"),
+			url=kvstore.get("url"),
+			modtimes=modtimes,
+			modtimes_r=table.flip(modtimes),
+			os=os,
+			table=table,
+			string=string
+		})
+
+		if err then
+			print("Template error:", err)
+		end
+		content(res)
+	end, nil, nil, true))
+end
 
 srv.GET("/post/:postid", mw.new(function()
 	local template = require("template")
