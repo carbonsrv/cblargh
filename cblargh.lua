@@ -84,7 +84,7 @@ for k, v in pairs(titles) do
 	modtimes[v] = modtime(file)
 	posts_source[v] = src
 	posts[v] = markdown(src)
-	posts_preview[v] = markdown(string.sub(posts_source[v], 1, 100))
+	posts_preview[v] = markdown(string.sub(posts_source[v], 1, 100)) -- TODO: Check for cut-off markdown stuff
 end
 
 print() -- empty line
