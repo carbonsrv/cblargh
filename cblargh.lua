@@ -91,7 +91,6 @@ for k, v in pairs(titles) do
 
 	for i = 1, string.len(src) do
 		local c = string.sub(src, i, i)
-		print(i,string.byte(c))
 		if c == "\n" then
 			line_count = line_count + 1
 			if line_count >= 5 then
