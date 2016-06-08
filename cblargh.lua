@@ -84,7 +84,29 @@ for k, v in pairs(titles) do
 	modtimes[v] = modtime(file)
 	posts_source[v] = src
 	posts[v] = markdown(src)
-	posts_preview[v] = markdown(string.sub(posts_source[v], 1, 100)) -- TODO: Check for cut-off markdown stuff
+
+	local preview_src = src
+	local preview = ""
+	local line_count = 0
+
+	for i = 1, string.len(src) do
+		local c = string.sub(src, i, i)
+		print(i,string.byte(c))
+		if c == "\n" then
+			line_count = line_count + 1
+			if line_count >= 5 then
+				break
+			end
+		elseif string.sub(src, i, i+2) == "```" then
+			break
+		end
+		preview = preview .. c
+	end
+
+	preview = preview .. "\n"
+
+	posts_preview[v] = markdown(preview) -- TODO: Check for cut-off markdown stuff
+
 end
 
 print() -- empty line
