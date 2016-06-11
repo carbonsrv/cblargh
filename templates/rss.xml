@@ -6,7 +6,7 @@
 	<description><%= aboutme %></description>
 	<%& table.reverseOrderedPairs(modtimes_r) %>
 	<item>
-		<title><%v%></title>
+		<title><%= posts_title[v] %></title>
 		<link><%= url %>post/<%v%></link>
 		<guid isPermaLink="true" ><%= url %>post/<%v%></guid>
 		<pubDate><%= os.date("%a, %d %b %Y %T %z", k)%></pubDate>
