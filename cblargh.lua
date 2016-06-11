@@ -71,6 +71,7 @@ kvstore.set("template_rss", rss_template)
 local posts = {}
 local posts_source = {}
 local posts_preview = {}
+local posts_title = {}
 local modtimes = {}
 local titles, err = list(settings.posts_path)
 if err then
@@ -81,6 +82,14 @@ for k, v in pairs(titles) do
 	local file = settings.posts_path .. v
 	print("post/"..v, "->", file)
 	local src = readfile(file)
+
+	if string.sub(src, 1, 2) == "# " then
+		posts_title[v] = string.match(src, "^#* ([^\n]*)\n")
+		src = src:match("^# [^\n]*\n(.*)$")
+	else
+		posts_title[v] = v
+	end
+
 	modtimes[v] = modtime(file)
 	posts_source[v] = src
 	posts[v] = markdown(src)
@@ -92,9 +101,11 @@ for k, v in pairs(titles) do
 	for i = 1, string.len(src) do
 		local c = string.sub(src, i, i)
 		if c == "\n" then
-			line_count = line_count + 1
-			if line_count >= 5 then
-				break
+			if string.sub(src, i, i+1) == "\n\n" then
+				line_count = line_count + 1
+				if line_count >= 5 then
+					break
+				end
 			end
 		elseif string.sub(src, i, i+2) == "```" then
 			break
@@ -105,7 +116,6 @@ for k, v in pairs(titles) do
 	preview = preview .. "\n"
 
 	posts_preview[v] = markdown(preview) -- TODO: Check for cut-off markdown stuff
-
 end
 
 print() -- empty line
@@ -113,6 +123,7 @@ print() -- empty line
 kvstore.set("posts", posts)
 kvstore.set("posts_source", posts_source)
 kvstore.set("posts_preview", posts_preview)
+kvstore.set("posts_title", posts_title)
 kvstore.set("modtimes", modtimes)
 
 -- Load static files into memory.
@@ -139,6 +150,7 @@ srv.GET("/", mw.new(function() -- Front page
 		posts=kvstore.get("posts"),
 		posts_source=kvstore.get("posts_source"),
 		posts_preview=kvstore.get("posts_preview"),
+		posts_title=kvstore.get("posts_title"),
 		url=kvstore.get("url"),
 		modtimes=modtimes,
 		modtimes_r=table.flip(modtimes),
@@ -164,6 +176,7 @@ if about_template then
 			posts=kvstore.get("posts"),
 			posts_source=kvstore.get("posts_source"),
 			posts_preview=kvstore.get("posts_preview"),
+			posts_title=kvstore.get("posts_title"),
 			url=kvstore.get("url"),
 			modtimes=modtimes,
 			modtimes_r=table.flip(modtimes),
@@ -185,6 +198,7 @@ srv.GET("/post/:postid", mw.new(function()
 	local posts = kvstore.get("posts")
 	local posts_source = kvstore.get("posts_source")
 	local posts_preview = kvstore.get("posts_preview")
+	local posts_title = kvstore.get("posts_title")
 	local modtimes=kvstore.get("modtimes")
 	local postid = params("postid")
 
@@ -200,10 +214,12 @@ srv.GET("/post/:postid", mw.new(function()
 	local res, err = template.render(src, {
 		postid=postid,
 		post=posts[postid],
+		post_title=posts_title[postid],
 		preview=posts_preview[postid],
 		posts=posts,
 		posts_source=posts_source,
 		posts_preview=posts_preview,
+		posts_title=posts_title,
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		url=kvstore.get("url"),
@@ -230,6 +246,7 @@ srv.GET("/rss.xml", mw.new(function()
 		posts=kvstore.get("posts"),
 		posts_source=kvstore.get("posts_source"),
 		posts_preview=kvstore.get("posts_preview"),
+		posts_title=kvstore.get("posts_title"),
 		title=kvstore.get("title"),
 		aboutme=kvstore.get("aboutme"),
 		url=kvstore.get("url"),

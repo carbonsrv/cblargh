@@ -22,14 +22,10 @@
 						<%& table.reverseOrderedPairs(modtimes_r) %>
 						<div class="mdl-card mdl-shadow--2dp">
 							<div class="mdl-card__title">
-								<h3 class="mdl-card__title-text"><%= (v:gsub("_", " "):gsub("^(.)",function(ch)return ch:upper()end)):gsub(".md$", "") %></h3>
+								<h3 class="mdl-card__title-text"><%= posts_title[v] %></h3>
 							</div>
 							<div class="mdl-card__supporting-text post">
-								<p><%%=
-									str = posts[v]
-	    								-- Find a way to truncate
-									return str
-	    							%%></p>
+								<p><%%= posts_preview[v] %%></p>
 							</div>
 							<!-- Remove unless subcontents like date -->
 							<div class="mdl-card__actions flex">
