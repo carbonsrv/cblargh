@@ -7,15 +7,15 @@ table {
 	padding: 15px;
 }
 
-#content.mdl-card {
+#content > .mdl-card {
 	margin: 2px 0px;
 }
 
-#content.mdl-card:last-child {
+#content > .mdl-card:last-child {
 	margin-bottom: 0px;
 }
 
-#content.mdl-card:first-child {
+#content > .mdl-card:first-child {
 	margin-top: 0px;
 }
 
