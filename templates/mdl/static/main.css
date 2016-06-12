@@ -59,6 +59,7 @@ p {
 .post {
 	max-height: 500px;
 	overflow-y: scroll;
+	overflow: auto;
 }
 
 footer.mdl-mini-footer {
