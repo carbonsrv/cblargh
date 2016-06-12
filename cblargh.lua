@@ -98,19 +98,18 @@ for k, v in pairs(titles) do
 	local preview = ""
 	local line_count = 0
 
-	for i = 1, string.len(src) do
-		local c = string.sub(src, i, i)
-		if c == "\n" then
-			if string.sub(src, i, i+1) == "\n\n" then
-				line_count = line_count + 1
-				if line_count >= 5 then
-					break
-				end
+	for m in string.gmatch(src, "[^\n]*\n*") do
+		if m:sub(-2,-1) == "\n\n" then
+			line_count = line_count + 1
+			if line_count >= 5 then
+				break
 			end
-		elseif string.sub(src, i, i+2) == "```" then
+		elseif m:sub(1,1) == "#" then
+			break
+		elseif m:sub(1, 3) == "```" then
 			break
 		end
-		preview = preview .. c
+		preview = preview .. m
 	end
 
 	preview = preview .. "\n"
