@@ -6,7 +6,7 @@
 		<h1><%= title %></h1>
 		<h3><%= aboutme %></h2><br />
 		<%& table.reverseOrderedPairs(modtimes_r) %>
-		<h1>* <a href="post/<%v%>"><%v%></a> - <%= os.date("%a %b %d %T %Z %Y", k) %></h1><br />
+		<h1>* <a href="post/<%v%>"><%%= posts_title[v] %%></a> - <%= os.date("%a %b %d %T %Z %Y", k) %></h1><br />
 		<%&%>
 	</body>
 </html>

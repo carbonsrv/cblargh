@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title><%= title .. " | " .. postid %></title>
+		<title><%= title .. " | " .. post_title %></title>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -13,6 +13,7 @@
 		<div class="content">
 			<h4 class="noselect">$ date</h4>
 			<h2 class="title cursor noselect"><%= os.date("%a %b %d %T %Z %Y", modtimes[postid]) %></h1><br />
+			<h1><%%= post_title %%></h1>
 			<%%= post %%>
 			<h2><a href="/">$ cd ..</a></h2>
 		</div>
