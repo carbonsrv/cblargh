@@ -104,7 +104,9 @@ for k, v in pairs(titles) do
 			if line_count >= 5 then
 				break
 			end
-		elseif m:sub(1,1) == "#" then
+		end
+
+		if m:match("^(%#* ).*$") then
 			break
 		elseif m:sub(1, 3) == "```" then
 			break
